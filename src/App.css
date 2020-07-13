@@ -17,8 +17,24 @@ div.absolute {
   left: 100px;
 } 
 .array-bar-graph{
-    width: 4px;
   background-color: lightseagreen;
   display: inline-block;
   margin: 0 1px;
 }
+.input-range__label--max {
+	display :none;
+}
+
+.input-range__label--min {
+	display :none;
+}
+.input-range__label-container{
+  display: none;
+}
+div.disabled
+{
+  pointer-events: none;
+  opacity: 0.5;
+  background: #CCC;
+}
+
