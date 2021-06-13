@@ -1,39 +1,55 @@
 {
+  "homepage": "http://shishira1203.github.io/SortingVisualizerAlpha",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "name": "sorting",
   "version": "0.1.0",
   "private": true,
-  "homepage": " https://shishira1203.github.io/SortingVisualizerAlpha",
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@react-native-community/slider": "^3.0.0",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "bootstrap": "^4.5.0",
-    "gh-pages": "^3.1.0",
-    "react": "^16.13.1",
-    "react-animation-components": "^3.0.0",
-    "react-bootstrap": "^1.2.1",
-    "react-dom": "^16.13.1",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^12.20.15",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.7",
+    "bootstrap": "^5.0.1",
+    "gh-pages": "^3.2.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1",
+    "react": "^17.0.2",
+    "react-awesome-reveal": "^3.8.1",
+    "react-dark-mode-toggle": "^0.2.0",
+    "react-dom": "^17.0.2",
     "react-input-range": "^1.3.0",
-    "react-rangeslider": "^2.2.0",
-    "react-redux": "^7.2.0",
-    "react-redux-form": "^1.16.14",
-    "react-scripts": "3.4.1",
-    "react-select": "^3.1.0",
-    "react-vis": "^1.11.7",
-    "reactstrap": "^8.5.1",
-    "redux": "^4.0.5"
+    "react-scripts": "4.0.3",
+    "reactstrap": "^8.9.0",
+    "styled-components": "^5.3.0",
+    "typescript": "^4.3.2",
+    "web-vitals": "^1.1.2"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,md": [
+      "prettier --write"
+    ]
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "yarn build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -46,5 +62,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/styled-components": "^5.1.10"
   }
 }
