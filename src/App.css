@@ -1,40 +1,19 @@
-div.absolute {
-  position: absolute;
-  width: 100%;
-  bottom: 10px;
-  align-items: center;
+.array-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding-top: 10%;
 }
-.sorttech{
-  width: 150px;
-}
-.inputr{
-  padding: initial;
-  margin: 2 px;
-}
-.array-container{
-  position: absolute;
-  padding-top: 40px;
-  left: 100px;
-} 
-.array-bar-graph{
-  background-color: lightseagreen;
+.array-bar-graph {
   display: inline-block;
   margin: 0 1px;
 }
 .input-range__label--max {
-	display :none;
-}
-
-.input-range__label--min {
-	display :none;
-}
-.input-range__label-container{
   display: none;
 }
-div.disabled
-{
-  pointer-events: none;
-  opacity: 0.5;
-  background: #CCC;
+.input-range__label--min {
+  display: none;
 }
-
+.input-range__label-container {
+  display: none;
+}
