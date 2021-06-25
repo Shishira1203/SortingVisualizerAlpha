@@ -1,4 +1,4 @@
-import { ArrayBar } from "../App";
+import { ArrayBar, SwapType } from "../App";
 
 const heapRoot = (
   array: Array<ArrayBar>,
@@ -10,20 +10,19 @@ const heapRoot = (
   let right = 2 * i + 2;
   let max = i;
   if (left < arrayLength && array[left].height > array[max].height) {
-    animations.push([left, max, false, false]);
-    animations.push([left, max, false, true]);
+    animations.push([left, max, SwapType.CHANGE_COLOR]);
+    animations.push([left, max, SwapType.RESET]);
     max = left;
   }
   if (right < arrayLength && array[right].height > array[max].height) {
-    animations.push([right, max, false, false]);
-    animations.push([right, max, false, true]);
+    animations.push([right, max, SwapType.CHANGE_COLOR]);
+    animations.push([right, max, SwapType.RESET]);
     max = right;
   }
   if (max !== i) {
-    animations.push([max, i, false, false]);
-    animations.push([max, i, false, true]);
-    animations.push([i, array[max].height, true, false]);
-    animations.push([max, array[max].height, true, false]);
+    animations.push([max, i, SwapType.CHANGE_COLOR]);
+    animations.push([max, i, SwapType.RESET]);
+    animations.push([i, max, SwapType.SWAP]);
     let temp = array[i];
     array[i] = array[max];
     array[max] = temp;
@@ -40,8 +39,7 @@ export const heapSortHelper = (
     heapRoot(array, i, arrayLength, animations);
   }
   for (let i = array.length - 1; i > 0; i--) {
-    animations.push([0, array[i].height, true, false]);
-    animations.push([i, array[0].height, true, false]);
+    animations.push([0, i, SwapType.SWAP]);
     let temp = array[0];
     array[0] = array[i];
     array[i] = temp;

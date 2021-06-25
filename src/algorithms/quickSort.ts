@@ -1,4 +1,4 @@
-import { ArrayBar } from "../App";
+import { ArrayBar, SwapType } from "../App";
 
 const partition = (
   array: Array<ArrayBar>,
@@ -11,23 +11,23 @@ const partition = (
   let piv = array[start];
   while (i < j) {
     while (i < j && array[--j].height >= piv.height) {
-      animations.push([i, j, false, false]);
-      animations.push([i, j, false, true]);
+      animations.push([i, j, SwapType.CHANGE_COLOR]);
+      animations.push([i, j, SwapType.RESET]);
     }
     if (i < j) {
-      animations.push([i, array[j].height, true, false]);
+      animations.push([i, array[j].height,SwapType.COPY]);
       array[i] = array[j];
     }
     while (i < j && array[++i].height <= piv.height) {
-      animations.push([i, j, false, false]);
-      animations.push([i, j, false, true]);
+      animations.push([i, j, SwapType.CHANGE_COLOR]);
+      animations.push([i, j, SwapType.RESET]);
     }
     if (i < j) {
-      animations.push([j, array[i].height, true, false]);
+      animations.push([j, array[i].height,SwapType.COPY]);
       array[j] = array[i];
     }
   }
-  animations.push([j, piv.height, true, false]);
+  animations.push([j, piv.height,SwapType.COPY]);
   array[j] = piv;
   return j;
 };

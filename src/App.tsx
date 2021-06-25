@@ -14,6 +14,8 @@ import {
   ThemeProps,
 } from "styled-components";
 import DarkModeToggle from "react-dark-mode-toggle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import InputRange from "react-input-range";
 import "react-input-range/lib/css/index.css";
 
@@ -26,6 +28,18 @@ export type ThemeType = {
   mode: string;
 };
 
+export enum SwapType {
+  SWAP,
+  CHANGE_COLOR,
+  RESET,
+  COPY,
+}
+
+enum buttonType {
+  PLAY,
+  PAUSE,
+}
+
 const DEFUALT_COLOR = "teal";
 const SWAP_COLOR = "red";
 
@@ -34,6 +48,10 @@ export default function App() {
   const [arraySize, setArraySize] = useState<number | any>(100);
   const [animationSpeed, setAnimationSpeed] = useState<number | any>(0);
   const [disabled, setDisabled] = useState<boolean>(false);
+  const [animationArray, setAnimationArray] = useState<Array<any>>([]);
+  const [animArrIdx, setAnimArrIdx] = useState<number>(0);
+  const [timeouts, setTimeouts] = useState<Array<any>>([]);
+  const [buttonState, setButtonState] = useState<buttonType>(buttonType.PLAY);
   const [theme, setTheme] = useState<ThemeType>({ mode: "light" });
   const GlobalStyle = createGlobalStyle`
     body{
@@ -54,11 +72,89 @@ export default function App() {
     setArrayBarGraph(buildArray);
   }, [arraySize]);
 
+  const handleAnimations = () => {
+    const newTimeouts: Array<any> = [];
+    const animations = [...animationArray];
+    for (let i = animArrIdx; i <= animations.length; i++) {
+      if (i === animations.length) {
+        newTimeouts.push(
+          setTimeout(() => {
+            setTimeouts(newTimeouts);
+            setAnimationArray([]);
+            setButtonState(buttonType.PLAY);
+            setDisabled(false);
+            setAnimArrIdx(0);
+          }, -animationSpeed * (i - animArrIdx))
+        );
+        return;
+      } else if (i === animArrIdx) {
+        newTimeouts.push(
+          setTimeout(() => {
+            setDisabled(true);
+            setButtonState(buttonType.PAUSE);
+          }, -animationSpeed * (i - animArrIdx))
+        );
+      }
+      const newArrayBarGraph = [...arrayBarGraph];
+      const [barOneIdx, barTwoIdx, swapType] = animations[i];
+      if (swapType === SwapType.SWAP) {
+        newTimeouts.push(
+          setTimeout(() => {
+            const temp = newArrayBarGraph[barOneIdx].height;
+            newArrayBarGraph[barOneIdx].height =
+              newArrayBarGraph[barTwoIdx].height;
+            newArrayBarGraph[barTwoIdx].height = temp;
+            setArrayBarGraph(newArrayBarGraph);
+            setTimeouts(newTimeouts);
+            setAnimArrIdx(i);
+          }, -animationSpeed * (i - animArrIdx))
+        );
+      } else if (swapType === SwapType.COPY) {
+        newTimeouts.push(
+          setTimeout(() => {
+            newArrayBarGraph[barOneIdx].height = barTwoIdx;
+            setArrayBarGraph(newArrayBarGraph);
+            setTimeouts(newTimeouts);
+            setAnimArrIdx(i);
+          }, -animationSpeed * (i - animArrIdx))
+        );
+      } else {
+        newTimeouts.push(
+          setTimeout(() => {
+            const color =
+              swapType === SwapType.RESET ? DEFUALT_COLOR : SWAP_COLOR;
+            newArrayBarGraph[barOneIdx].color = color;
+            newArrayBarGraph[barTwoIdx].color = color;
+            setArrayBarGraph(newArrayBarGraph);
+            setTimeouts(newTimeouts);
+            setAnimArrIdx(i);
+          }, -animationSpeed * (i - animArrIdx))
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleAnimations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationArray.length]);
+
   const randomIntFromInterval = (min: number, max: number) =>
     Math.floor(Math.random() * (max - min + 1) + min);
 
+  const handleAnimationState = () => {
+    setDisabled(false);
+    setButtonState(buttonType.PLAY);
+    let leftAnimations = [...timeouts];
+    while (leftAnimations.length) {
+      clearTimeout(leftAnimations.pop());
+    }
+    setTimeouts([]);
+  };
   const resetArray = () => {
     const buildArray = [];
+    setAnimationArray([]);
+    setAnimArrIdx(0);
     for (let i = 0; i < arraySize; i++)
       buildArray.push({
         height: randomIntFromInterval(5, 500),
@@ -67,45 +163,20 @@ export default function App() {
     setArrayBarGraph(buildArray);
   };
 
-  const handleAnimations = (animations: Array<any>) => {
-    setDisabled(true);
-    for (let i = 0; i <= animations.length; i++) {
-      if (i === animations.length) {
-        setTimeout(() => {
-          setDisabled(false);
-        }, -animationSpeed * i);
-        return;
-      }
-      const newArrayBarGraph = [...arrayBarGraph];
-      const [barOneIdx, barTwoIndexorSwapHeight, swap, reset] = animations[i];
-      if (swap) {
-        setTimeout(() => {
-          newArrayBarGraph[barOneIdx].height = barTwoIndexorSwapHeight;
-          setArrayBarGraph(newArrayBarGraph);
-        }, -animationSpeed * i);
-      } else {
-        setTimeout(() => {
-          const color = reset ? DEFUALT_COLOR : SWAP_COLOR;
-          newArrayBarGraph[barOneIdx].color = color;
-          newArrayBarGraph[barTwoIndexorSwapHeight].color = color;
-          setArrayBarGraph(newArrayBarGraph);
-        }, -animationSpeed * i);
-      }
-    }
-  };
-
   const heapSort = () => {
     const currentArray = [...arrayBarGraph];
     const animations: Array<any> = [];
     heapSortHelper(currentArray, animations);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const countingSort = () => {
     const currentArray = [...arrayBarGraph];
     const animations: Array<any> = [];
     countingSortHelper(currentArray, 1, 700, animations);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const quickSort = () => {
@@ -113,14 +184,14 @@ export default function App() {
     if (currentArray.length <= 1) return currentArray;
     const animations: Array<any> = [];
     quickSortHelper(currentArray, 0, currentArray.length, animations);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const mergeSort = () => {
     const currentArray = [...arrayBarGraph];
     const tempArray = currentArray.slice();
     const animations: Array<any> = [];
-    if (currentArray.length <= 1) return currentArray;
     mergeSortHelper(
       currentArray,
       0,
@@ -128,26 +199,29 @@ export default function App() {
       tempArray,
       animations
     );
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const selectionSort = () => {
     const currentArray = [...arrayBarGraph];
     const animations = selectionSortHelper(currentArray);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const insertionSort = () => {
     const currentArray = [...arrayBarGraph];
     const animations = insertionSortHelper(currentArray);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   const bubbleSort = () => {
     const currentArray = [...arrayBarGraph];
-    console.log(arrayBarGraph);
     const animations = bubbleSortHelper(currentArray);
-    handleAnimations(animations);
+    setAnimationArray(animations);
+    setAnimArrIdx(0);
   };
 
   return (
@@ -194,7 +268,7 @@ export default function App() {
           <div id="ani" style={{ width: 150 }} className="text-white">
             Animation Speed
             <InputRange
-              minValue={-100}
+              minValue={-800}
               maxValue={0}
               value={animationSpeed}
               onChange={(val) => {
@@ -208,51 +282,49 @@ export default function App() {
           </div>
           <ButtonGroup>
             <Button
-              onClick={() => bubbleSort()}
+              onClick={bubbleSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Bubble Sort
             </Button>
             <Button
-              onClick={() => selectionSort()}
+              onClick={selectionSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Selection Sort
             </Button>
             <Button
-              onClick={() => insertionSort()}
+              onClick={insertionSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Insertion Sort
             </Button>
             <Button
-              onClick={() => mergeSort()}
+              onClick={mergeSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Merge Sort
             </Button>
             <Button
-              onClick={() => heapSort()}
+              onClick={heapSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Heap Sort
             </Button>
             <Button
-              onClick={() => quickSort()}
+              onClick={quickSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
               Quick Sort
             </Button>
             <Button
-              onClick={() => {
-                countingSort();
-              }}
+              onClick={countingSort}
               className="btn bg-transparent  text-white"
               disabled={disabled}
             >
@@ -272,6 +344,17 @@ export default function App() {
               }}
             ></div>
           ))}
+        </div>
+        <div className="center-div">
+          {buttonState === buttonType.PLAY ? (
+            <Button onClick={handleAnimations}>
+              <FontAwesomeIcon icon={faPlay} size="lg" />
+            </Button>
+          ) : (
+            <Button onClick={handleAnimationState}>
+              <FontAwesomeIcon icon={faPause} size="lg" />
+            </Button>
+          )}
         </div>
       </>
     </ThemeProvider>

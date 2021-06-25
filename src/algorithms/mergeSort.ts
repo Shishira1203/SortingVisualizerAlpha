@@ -1,4 +1,4 @@
-import { ArrayBar } from "../App";
+import { ArrayBar, SwapType } from "../App";
 
 const doMerge = (
   array: Array<ArrayBar>,
@@ -12,27 +12,30 @@ const doMerge = (
   let i = start;
   let j = mid + 1;
   while (i <= mid && j <= end) {
-    animations.push([i, j, false, false]);
+    animations.push([i, j, SwapType.CHANGE_COLOR]);
+    animations.push([i, j, SwapType.RESET]);
     if (tempArray[i].height <= tempArray[j].height) {
-      animations.push([i, j, false, true]);
-      animations.push([k, tempArray[i].height, true, false]);
+      animations.push([k, i, SwapType.CHANGE_COLOR]);
+      animations.push([k, tempArray[i].height, SwapType.COPY]);
+      animations.push([k, i, SwapType.RESET]);
       array[k++] = tempArray[i++];
     } else {
-      animations.push([i, j, false, true]);
-      animations.push([k, tempArray[j].height, true, false]);
+      animations.push([k, i, SwapType.CHANGE_COLOR]);
+      animations.push([k, tempArray[j].height, SwapType.COPY]);
+      animations.push([k, i, SwapType.RESET]);
       array[k++] = tempArray[j++];
     }
   }
   while (i <= mid) {
-    animations.push([k, k, false, false]);
-    animations.push([k, tempArray[i].height, true, false]);
-    animations.push([k, k, false, true]);
+    animations.push([k, i, SwapType.CHANGE_COLOR]);
+    animations.push([k, tempArray[i].height, SwapType.COPY]);
+    animations.push([k, i, SwapType.RESET]);
     array[k++] = tempArray[i++];
   }
   while (j <= end) {
-    animations.push([k, k, false, false]);
-    animations.push([k, tempArray[j].height, true, false]);
-    animations.push([k, k, false, true]);
+    animations.push([k, j, SwapType.CHANGE_COLOR]);
+    animations.push([k, tempArray[j].height, SwapType.COPY]);
+    animations.push([k, j, SwapType.RESET]);
     array[k++] = tempArray[j++];
   }
 };

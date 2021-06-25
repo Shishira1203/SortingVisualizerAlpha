@@ -1,4 +1,4 @@
-import { ArrayBar } from "../App";
+import { ArrayBar, SwapType } from "../App";
 
 export const countingSortHelper = (
   array: Array<ArrayBar>,
@@ -12,12 +12,12 @@ export const countingSortHelper = (
   }
   for (let i = 0; i < array.length; i++) {
     countArray[array[i].height]++;
-    animations.push([i, i, false, false]);
-    animations.push([i, i, false, true]);
+    animations.push([i, i, SwapType.CHANGE_COLOR]);
+    animations.push([i, i, SwapType.RESET]);
   }
   for (let i = min, j = 0; i <= max; i++) {
     while (countArray[i] > 0) {
-      animations.push([j, i, true, false]);
+      animations.push([j, i, SwapType.COPY]);
       j++;
       countArray[i]--;
     }
