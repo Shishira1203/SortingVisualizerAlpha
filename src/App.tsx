@@ -17,6 +17,7 @@ import DarkModeToggle from "react-dark-mode-toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import InputRange from "react-input-range";
+import ReactTooltip from "react-tooltip";
 import "react-input-range/lib/css/index.css";
 
 export type ArrayBar = {
@@ -334,15 +335,19 @@ export default function App() {
         </Navbar>
         <div className="array-container">
           {arrayBarGraph.map((value, idx) => (
-            <div
-              className="array-bar-graph"
-              key={idx}
-              style={{
-                backgroundColor: value.color,
-                height: `${value.height}px`,
-                width: `${1000 / arrayBarGraph.length}px`,
-              }}
-            ></div>
+            <>
+              <div
+                className="array-bar-graph"
+                key={idx}
+                style={{
+                  backgroundColor: value.color,
+                  height: `${value.height}px`,
+                  width: `${1000 / arrayBarGraph.length}px`,
+                }}
+                data-tip={value.height}
+              ></div>
+              <ReactTooltip place="top" />
+            </>
           ))}
         </div>
         <div className="center-div">
