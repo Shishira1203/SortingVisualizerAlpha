@@ -3,7 +3,6 @@ import {
     Navbar,
     NavbarBrand,
     Button,
-    UncontrolledTooltip,
     Collapse,
     NavbarToggler,
     Nav,
@@ -176,6 +175,7 @@ export default function App() {
                 color: DEFUALT_COLOR,
             });
         setArrayBarGraph(buildArray);
+        setCurrentAlgorithm("Visualize!");
     };
 
     const heapSort = () => {
@@ -366,8 +366,9 @@ export default function App() {
                                 <DropdownToggle nav caret>
                                     Select an Algorithm
                                 </DropdownToggle>
-                                <DropdownMenu right color="dark">
+                                <DropdownMenu right className="bg-dark">
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Bubble Sort!",
@@ -377,6 +378,7 @@ export default function App() {
                                         Bubble Sort
                                     </DropdownItem>
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Selection Sort!",
@@ -386,6 +388,7 @@ export default function App() {
                                         Selection Sort
                                     </DropdownItem>
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Insertion Sort!",
@@ -395,6 +398,7 @@ export default function App() {
                                         Insertion Sort
                                     </DropdownItem>
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Heap Sort!",
@@ -404,6 +408,7 @@ export default function App() {
                                         Heap Sort
                                     </DropdownItem>
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Merge Sort!",
@@ -413,6 +418,7 @@ export default function App() {
                                         Merge Sort
                                     </DropdownItem>
                                     <DropdownItem
+                                        className="text-white"
                                         onClick={() => {
                                             setCurrentAlgorithm(
                                                 "Visualize Quick Sort!",
@@ -420,6 +426,16 @@ export default function App() {
                                         }}
                                     >
                                         Quick Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        className="text-white"
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Counting Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Counting Sort
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
@@ -438,24 +454,15 @@ export default function App() {
                 <Navbar color="dark"></Navbar>
                 <div className="array-container">
                     {arrayBarGraph.map((value, idx) => (
-                        <>
-                            <div
-                                className="array-bar-graph"
-                                key={idx}
-                                style={{
-                                    backgroundColor: value.color,
-                                    height: `${value.height}px`,
-                                    width: `${1000 / arrayBarGraph.length}px`,
-                                }}
-                                id={"tooltip" + idx}
-                            ></div>
-                            <UncontrolledTooltip
-                                placement="top"
-                                target={"tooltip" + idx}
-                            >
-                                {value.height}
-                            </UncontrolledTooltip>
-                        </>
+                        <div
+                            className="array-bar-graph"
+                            key={idx}
+                            style={{
+                                backgroundColor: value.color,
+                                height: `${value.height}px`,
+                                width: `${1000 / arrayBarGraph.length}px`,
+                            }}
+                        ></div>
                     ))}
                 </div>
                 <div className="center-div">
