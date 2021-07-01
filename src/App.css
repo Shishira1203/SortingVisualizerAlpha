@@ -2,7 +2,7 @@
     display: flex;
     align-items: baseline;
     justify-content: center;
-    padding-top: 10%;
+    padding-top: 10vh;
 }
 .array-bar-graph {
     display: inline-block;

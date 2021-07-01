@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Navbar, NavbarBrand, Button, ButtonGroup } from "reactstrap";
+import {
+    Navbar,
+    NavbarBrand,
+    Button,
+    ButtonGroup,
+    UncontrolledTooltip,
+} from "reactstrap";
 import "./App.css";
 import { heapSortHelper } from "./algorithms/heapSort";
 import { countingSortHelper } from "./algorithms/coutingSort";
@@ -17,7 +23,6 @@ import DarkModeToggle from "react-dark-mode-toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import InputRange from "react-input-range";
-import ReactTooltip from "react-tooltip";
 import "react-input-range/lib/css/index.css";
 
 export type ArrayBar = {
@@ -53,7 +58,7 @@ export default function App() {
     const [animArrIdx, setAnimArrIdx] = useState<number>(0);
     const [timeouts, setTimeouts] = useState<Array<any>>([]);
     const [buttonState, setButtonState] = useState<buttonType>(buttonType.PLAY);
-    const [theme, setTheme] = useState<ThemeType>({ mode: "light" });
+    const [theme, setTheme] = useState<ThemeType>({ mode: "dark" });
     const GlobalStyle = createGlobalStyle`
     body{
       background-color: ${(props: ThemeProps<ThemeType>) =>
@@ -89,12 +94,8 @@ export default function App() {
                 );
                 return;
             } else if (i === animArrIdx) {
-                newTimeouts.push(
-                    setTimeout(() => {
-                        setDisabled(true);
-                        setButtonState(buttonType.PAUSE);
-                    }, -animationSpeed * (i - animArrIdx)),
-                );
+                setDisabled(true);
+                setButtonState(buttonType.PAUSE);
             }
             const newArrayBarGraph = [...arrayBarGraph];
             const [barOneIdx, barTwoIdx, swapType] = animations[i];
@@ -348,9 +349,14 @@ export default function App() {
                                     height: `${value.height}px`,
                                     width: `${1000 / arrayBarGraph.length}px`,
                                 }}
-                                data-tip={value.height}
+                                id={"tooltip" + idx}
                             ></div>
-                            <ReactTooltip place="top" />
+                            <UncontrolledTooltip
+                                placement="top"
+                                target={"tooltip" + idx}
+                            >
+                                {value.height}
+                            </UncontrolledTooltip>
                         </>
                     ))}
                 </div>
