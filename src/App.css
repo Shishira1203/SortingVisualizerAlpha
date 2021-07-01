@@ -8,12 +8,8 @@
     display: inline-block;
     margin: 0 1px;
 }
-.input-range__label--max {
-    display: none;
-}
-.input-range__label--min {
-    display: none;
-}
+.input-range__label--max,
+.input-range__label--min,
 .input-range__label-container {
     display: none;
 }
@@ -21,4 +17,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.nav-item {
+    margin-right: 2vw;
+}
+.navbar-no-y-padding {
+    padding-top: 0.5% !important;
+    padding-bottom: 0% !important;
 }

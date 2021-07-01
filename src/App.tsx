@@ -3,8 +3,16 @@ import {
     Navbar,
     NavbarBrand,
     Button,
-    ButtonGroup,
     UncontrolledTooltip,
+    Collapse,
+    NavbarToggler,
+    Nav,
+    NavItem,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    NavLink,
 } from "reactstrap";
 import "./App.css";
 import { heapSortHelper } from "./algorithms/heapSort";
@@ -59,6 +67,9 @@ export default function App() {
     const [timeouts, setTimeouts] = useState<Array<any>>([]);
     const [buttonState, setButtonState] = useState<buttonType>(buttonType.PLAY);
     const [theme, setTheme] = useState<ThemeType>({ mode: "dark" });
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentAlgorithm, setCurrentAlgorithm] =
+        useState<string>("Visualize!");
     const GlobalStyle = createGlobalStyle`
     body{
       background-color: ${(props: ThemeProps<ThemeType>) =>
@@ -228,116 +239,203 @@ export default function App() {
         setAnimArrIdx(0);
     };
 
+    const handleAlgorithms = () => {
+        const cA = currentAlgorithm;
+        const chosenAlgorithm = cA.split(" ");
+        if (chosenAlgorithm.length === 1) {
+            setCurrentAlgorithm("Pick an Algorithm!");
+            return;
+        }
+        console.log(chosenAlgorithm[1]);
+        switch (chosenAlgorithm[1]) {
+            case "Bubble":
+                bubbleSort();
+                break;
+            case "Selection":
+                selectionSort();
+                break;
+            case "Insertion":
+                insertionSort();
+                break;
+            case "Heap":
+                heapSort();
+                break;
+            case "Merge":
+                mergeSort();
+                break;
+            case "Quick":
+                quickSort();
+                break;
+            case "Counting":
+                countingSort();
+                break;
+            default:
+                return;
+        }
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <>
                 <GlobalStyle />
-                <Navbar color="dark">
+                <Navbar
+                    color="dark"
+                    dark
+                    expand="md"
+                    className="navbar-no-y-padding"
+                >
                     <NavbarBrand
-                        href="#"
-                        className="text-white"
-                        onClick={() => window.location.reload()}
+                        href="/SortingVisualizerAlpha"
+                        style={{ marginLeft: "1vw" }}
                     >
-                        SortingVisualizer
+                        SortingVisualizerAlpha
                     </NavbarBrand>
-                    <DarkModeToggle
-                        onChange={() =>
-                            setTheme(
-                                theme.mode === "dark"
-                                    ? { mode: "light" }
-                                    : { mode: "dark" },
-                            )
-                        }
-                        checked={theme.mode === "dark"}
-                        size={70}
-                    ></DarkModeToggle>
-                    <Button
-                        onClick={() => resetArray()}
-                        className="btn bg-transparent  text-white"
-                        disabled={disabled}
-                    >
-                        Generate New Array
-                    </Button>
-                    <div id="len" style={{ width: 150 }} className="text-white">
-                        Array Length
-                        <InputRange
-                            minValue={2}
-                            maxValue={100}
-                            value={arraySize}
-                            onChange={(val) => {
-                                setArraySize(val);
-                            }}
-                            onChangeComplete={(val) => setArraySize(val)}
-                            disabled={disabled}
-                        ></InputRange>
-                    </div>
-                    <div id="ani" style={{ width: 150 }} className="text-white">
-                        Animation Speed
-                        <InputRange
-                            minValue={-800}
-                            maxValue={0}
-                            value={animationSpeed}
-                            onChange={(val) => {
-                                setAnimationSpeed(val);
-                            }}
-                            onChangeComplete={(val) => {
-                                setAnimationSpeed(val);
-                            }}
-                            disabled={disabled}
-                        ></InputRange>
-                    </div>
-                    <ButtonGroup>
-                        <Button
-                            onClick={bubbleSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Bubble Sort
-                        </Button>
-                        <Button
-                            onClick={selectionSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Selection Sort
-                        </Button>
-                        <Button
-                            onClick={insertionSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Insertion Sort
-                        </Button>
-                        <Button
-                            onClick={mergeSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Merge Sort
-                        </Button>
-                        <Button
-                            onClick={heapSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Heap Sort
-                        </Button>
-                        <Button
-                            onClick={quickSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Quick Sort
-                        </Button>
-                        <Button
-                            onClick={countingSort}
-                            className="btn bg-transparent  text-white"
-                            disabled={disabled}
-                        >
-                            Counting Sort
-                        </Button>
-                    </ButtonGroup>
+                    <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
+                    <Collapse isOpen={isOpen} navbar>
+                        <Nav className="mr-auto" navbar>
+                            <NavItem
+                                className="navitem"
+                                style={{ paddingTop: 6 }}
+                            >
+                                <DarkModeToggle
+                                    onChange={() =>
+                                        setTheme(
+                                            theme.mode === "dark"
+                                                ? { mode: "light" }
+                                                : { mode: "dark" },
+                                        )
+                                    }
+                                    checked={theme.mode === "dark"}
+                                    size={50}
+                                ></DarkModeToggle>
+                            </NavItem>
+                            <NavItem className="navitem">
+                                <NavLink
+                                    onClick={() => resetArray()}
+                                    disabled={disabled}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    Generate New Array
+                                </NavLink>
+                            </NavItem>
+                            <NavItem className="navitem">
+                                <div
+                                    className="text-white"
+                                    style={{ width: 150 }}
+                                >
+                                    Array Length
+                                    <InputRange
+                                        minValue={2}
+                                        maxValue={100}
+                                        value={arraySize}
+                                        onChange={(val) => {
+                                            setArraySize(val);
+                                        }}
+                                        onChangeComplete={(val) =>
+                                            setArraySize(val)
+                                        }
+                                        disabled={disabled}
+                                    ></InputRange>
+                                </div>
+                            </NavItem>
+                            <NavItem className="navitem">
+                                <div
+                                    className="text-white"
+                                    style={{ width: 150 }}
+                                >
+                                    Animation Speed
+                                    <InputRange
+                                        minValue={-800}
+                                        maxValue={0}
+                                        value={animationSpeed}
+                                        onChange={(val) => {
+                                            setAnimationSpeed(val);
+                                        }}
+                                        onChangeComplete={(val) => {
+                                            setAnimationSpeed(val);
+                                        }}
+                                        disabled={disabled}
+                                    ></InputRange>
+                                </div>
+                            </NavItem>
+                            <UncontrolledDropdown
+                                nav
+                                inNavbar
+                                disabled={disabled}
+                            >
+                                <DropdownToggle nav caret>
+                                    Select an Algorithm
+                                </DropdownToggle>
+                                <DropdownMenu right color="dark">
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Bubble Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Bubble Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Selection Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Selection Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Insertion Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Insertion Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Heap Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Heap Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Merge Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Merge Sort
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setCurrentAlgorithm(
+                                                "Visualize Quick Sort!",
+                                            );
+                                        }}
+                                    >
+                                        Quick Sort
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+                            <NavItem className="navitem">
+                                <NavLink
+                                    onClick={() => handleAlgorithms()}
+                                    disabled={disabled}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    {currentAlgorithm}
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Collapse>
                 </Navbar>
+                <Navbar color="dark"></Navbar>
                 <div className="array-container">
                     {arrayBarGraph.map((value, idx) => (
                         <>
